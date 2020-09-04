@@ -151,7 +151,7 @@ public class Gui{
     //if(osWin==true) TODO
     String filename =  Paths.get(wk, "/data/" + "zones_list").toString();
     String function_path =  Paths.get(wk, "/R/" + "est.R0.TD.R").toString();
-    String temp_file_path = Paths.get(wk, "temp.est.R0.TD.R").toString();
+    String temp_file_path = Paths.get(wk, "/code/" + "temp.est.R0.TD.R").toString();
     
     String[] arr = new String[0];
 
