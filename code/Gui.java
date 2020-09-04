@@ -89,8 +89,8 @@ public class Gui{
   }
 
   static void GetAllData() throws IOException {
-    Path workingDir = Paths.get("..");
-    String wk = new String(workingDir.toAbsolutePath().toString());
+    Path workingDir = Paths.get(System.getProperty("user.dir"));
+    String wk = workingDir.getParent().toString();
 
     // create 'plots' folder in Documents folder
     String docpath = Paths.get(wk, "/data/").toString();
@@ -99,7 +99,7 @@ public class Gui{
       Files.createDirectory(plotspath);  
     }
 
-    String pyPath = Paths.get(wk, "/Code/getalldata.py").toString();
+    String pyPath = Paths.get(wk, "/code/getalldata.py").toString();
     runCommand("\"get all data\"", pyPath);
 
     /* 
@@ -145,13 +145,13 @@ public class Gui{
 
     File temp_file = new File("temp.est.R0.TD.R");//change to .R
 
-    Path workingDir = Paths.get("..");
-    String wk = new String(workingDir.toAbsolutePath().toString());
+    Path workingDir = Paths.get(System.getProperty("user.dir"));
+    String wk = workingDir.getParent().toString();
     
     //if(osWin==true) TODO
     String filename =  Paths.get(wk, "/data/" + "zones_list").toString();
     String function_path =  Paths.get(wk, "/R/" + "est.R0.TD.R").toString();
-    String temp_file_path = Paths.get(wk, "/Code/" + "temp.est.R0.TD.R").toString();
+    String temp_file_path = Paths.get(wk, "temp.est.R0.TD.R").toString();
     
     String[] arr = new String[0];
 
@@ -258,8 +258,8 @@ public class Gui{
       String operSys = System.getProperty("os.name").toLowerCase();
       
       // gets path to save graphs inside "data/plots"
-      Path workingDir = Paths.get("..");
-      String wk = new String(workingDir.toAbsolutePath().toString());
+      Path workingDir = Paths.get(System.getProperty("user.dir"));
+      String wk = workingDir.getParent().toString();
       String dirpath = Paths.get(wk, "/data/plots/").toString();
       if (operSys.contains("win")) {
         dirpath =  "\"" + dirpath.replace("\\", "\\\\") + "\\\\";
