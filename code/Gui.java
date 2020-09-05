@@ -173,7 +173,7 @@ public class Gui{
       
       int daycount = Integer.parseInt(arr[0]); // gets first element of the file, which is the number of days
 
-      for(int i=1; i<arr.length; i++) { // starts at 'arr[1]' because 'arr[0]' is the number of days
+      for(int i=1; i<5; i++) { // starts at 'arr[1]' because 'arr[0]' is the number of days
         String path = Paths.get(wk, "/data/" + arr[i] + ".2020.R").toString();
         runCommand("\"Loading\"", path);  // 
         sleep(2000);
@@ -185,7 +185,12 @@ public class Gui{
       }
     } catch (IOException e) {
       e.printStackTrace();}
-    }
+    
+    // creates dashboard
+    sleep(2000);
+    String pyPath = Paths.get(wk, "/code/makeboard.py").toString();
+    runCommand("\"dashboard\"", pyPath);
+  }
 
   static void OpenRStudio(){
     // path to RStudio

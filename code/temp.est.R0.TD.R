@@ -4,9 +4,9 @@ library(R0)
 ## outbreak during the 2020 SARS-Cov2 pandemic in Italy
 
 # STANDARD SIMULATION
-data(Sicilia.2020)
+data(Calabria.2020)
 mGT<-generation.time("gamma", c(3, 1.5))
-TD <- est.R0.TD(Sicilia.2020, mGT, begin=1, end=192, nsim=1450)
+TD <- est.R0.TD(Calabria.2020, mGT, begin=1, end=192, nsim=1450)
 
 # Warning messages:
 # 1: In est.R0.TD(Italy.2020, mGT) : Simulations may take several minutes.
@@ -21,6 +21,6 @@ print(TD.weekly[["conf.int"]])
 print(TD.weekly[["R"]])
 # Reproduction number estimate using  Time-Dependant  method.
 # 1.878424 1.580976 1.356918 1.131633 0.9615463 0.8118902 0.8045254 0.8395747 0.8542518 0.8258094..
-png(file = "C:\\Users\\alice\\Desktop\\Tesi\\File\\R PROJECT\\R PROJECT\\R0-master\\data\\plots\\Sicilia.png", width = 1000, height = 400)
+png(file = "C:\\Users\\alice\\Desktop\\Tesi\\File\\R PROJECT\\R PROJECT\\R0-master\\data\\plots\\Calabria.png", width = 1000, height = 400)
 plot(TD.weekly)
 dev.off()
