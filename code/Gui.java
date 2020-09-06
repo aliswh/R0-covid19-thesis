@@ -3,6 +3,7 @@ import java.awt.event.KeyEvent;
 import java.awt.Robot;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.FileSystems;
 //scanner
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -20,7 +21,17 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ImageIcon;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
+import java.awt.Panel;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.BorderLayout;
 //exceptions
 import java.io.IOException;
 import java.awt.AWTException;
@@ -40,7 +51,7 @@ public class Gui{
 
     JFrame f = new JFrame("R0(t) for Covid-19");
     f.setSize(300, 300);
-    f.setLocation(300,300);
+    f.setLocation(50,300);
 
     final JButton button1 = new JButton("Download data");
     button1.addActionListener(new ActionListener() {
@@ -67,29 +78,40 @@ public class Gui{
       @Override
       public void actionPerformed(ActionEvent e) {
         SourceFiles();
+        // notify when download is completed
+        JOptionPane.showMessageDialog(f, "Operation completed");
       }
     });
 
-    final JButton button4 = new JButton("Save Graphs");
+    final JButton button4 = new JButton("Open dashboard.pdf");
     button4.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        //TODO
+        OpenPDF();
+      }
+    });
+
+    final JButton button5 = new JButton("Open dashboard panel");
+    button5.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        ShowBox(f);
       }
     });
     
     // add buttons to layout
-    f.setLayout(new GridLayout(4,1)); // 4 rows 1 column
+    f.setLayout(new GridLayout(5,1)); // 5 rows 1 column
     f.add(button1);
     f.add(button2);
     f.add(button3);
     f.add(button4);
+    f.add(button5);
   
     f.setVisible(true);
   }
 
-  static void GetAllData() throws IOException {
-    Path workingDir = Paths.get(System.getProperty("user.dir"));
+  public static void GetAllData() throws IOException {
+    Path workingDir = FileSystems.getDefault().getPath(new String()).toAbsolutePath();
     String wk = workingDir.getParent().toString();
 
     // create 'plots' folder in Documents folder
@@ -137,7 +159,7 @@ public class Gui{
     }
   }
 
-  static void SourceFiles(){
+  public static void SourceFiles(){
     /* boolean osWin = false;
     String operSys = System.getProperty("os.name").toLowerCase();
     if (operSys.contains("win"))
@@ -145,7 +167,7 @@ public class Gui{
 
     File temp_file = new File("temp.est.R0.TD.R");//change to .R
 
-    Path workingDir = Paths.get(System.getProperty("user.dir"));
+    Path workingDir = FileSystems.getDefault().getPath(new String()).toAbsolutePath();
     String wk = workingDir.getParent().toString();
     
     //if(osWin==true) TODO
@@ -192,7 +214,7 @@ public class Gui{
     runCommand("\"dashboard\"", pyPath);
   }
 
-  static void OpenRStudio(){
+  public static void OpenRStudio(){
     // path to RStudio
     String path = "C:/Program Files/RStudio/bin/rstudio.exe";
     runCommand("\"Opening RStudio\"", path);
@@ -214,7 +236,7 @@ public class Gui{
     }
   }
 
-  static void uncomment(String filepath_est_R0, String zone, File file, int daycount) throws IOException {
+  public static void uncomment(String filepath_est_R0, String zone, File file, int daycount) throws IOException {
     FileWriter fr = null;
     String regex = "end=\\d*,"; //'end=' followed by zero or more repetitions of any number [0-9] until char ','
     String endstring = "end=" + daycount + ",";
@@ -263,7 +285,7 @@ public class Gui{
       String operSys = System.getProperty("os.name").toLowerCase();
       
       // gets path to save graphs inside "data/plots"
-      Path workingDir = Paths.get(System.getProperty("user.dir"));
+      Path workingDir = FileSystems.getDefault().getPath(new String()).toAbsolutePath();
       String wk = workingDir.getParent().toString();
       String dirpath = Paths.get(wk, "/data/plots/").toString();
       if (operSys.contains("win")) {
@@ -305,7 +327,47 @@ public class Gui{
     }   
   }
 
-  static void source(){ 
+  public static void OpenPDF(){
+    Path workingDir = FileSystems.getDefault().getPath(new String()).toAbsolutePath();
+    String wk = workingDir.getParent().toString();
+    String filename =  Paths.get(wk, "/data/" + "_dashboard.pdf").toString();
+    runCommand("\"Open PDF\"", filename);
+  }
+
+  public static void ShowBox(JFrame f){
+    Path workingDir = FileSystems.getDefault().getPath(new String()).toAbsolutePath();
+    String wk = workingDir.getParent().toString();
+    File filedir =  Paths.get(wk, "/data/plots").toFile();
+
+    String[] filelist = filedir.list(); // list with all images names
+
+    JDialog d = new JDialog(f , "");
+
+    Panel panel = new Panel();  // where it shows images
+    panel.setSize(new Dimension(1000,400));
+
+    JList<String> folderlist = new JList<String>(filelist);
+    JScrollPane scrollPane = new JScrollPane(folderlist);
+    folderlist.addListSelectionListener(new ListSelectionListener() {
+      @Override
+      public void valueChanged(ListSelectionEvent arg0) {
+        panel.removeAll();
+        String link = folderlist.getSelectedValue().toString();
+        panel.add(new JLabel(new ImageIcon(Paths.get(wk, "/data/plots/" + link).toString())));
+        d.validate();
+        d.repaint();  
+      }
+    });
+
+    d.add(scrollPane, BorderLayout.LINE_START);
+    d.add(panel, BorderLayout.LINE_END);
+
+    d.setSize(1150, 400);
+    d.setLocation(350,300);
+    d.setVisible(true);
+  }
+
+  public static void source(){ 
     try {
       Robot robot = new Robot();
 
@@ -322,7 +384,7 @@ public class Gui{
     }
   }
 
-  static void sleep(int t){ 
+  public static void sleep(int t){ 
     try {
     Thread.sleep(t);
     } catch (InterruptedException e) {
@@ -330,7 +392,7 @@ public class Gui{
     } 
   }
 
-  static void runCommand(String title, String path){ 
+  public static void runCommand(String title, String path){ 
     String[] commands = {"cmd", "/c", "start", title, path};
     // title == title given to the window (irrelevant to code purposes)
     try {
