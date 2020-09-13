@@ -53,6 +53,7 @@ print('\r|OOO       |')
 
 count_makeFile = 0
 def makeFile(data, zone):
+    global count_makeFile
     if zone in allProvince:
         data = '#['+ str(count_makeFile) +'/129]' + 'CONTAGI GIORNALIERI DATO PROVINCIA: ' + zone +'\n' + zone + '.2020 = c(' + data + ')'
     elif zone in allRegion:

@@ -9,7 +9,7 @@ def changeDir(path):
     newpath = os.path.abspath(os.path.realpath(newpath))
     os.chdir(newpath)
 
-path = '../data/plots'
+path = '../data/data/plots'
 changeDir(path)    #change working directory
 
 pdf = FPDF()        # creates pdf

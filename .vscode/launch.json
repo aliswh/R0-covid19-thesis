@@ -10,6 +10,13 @@
       "request": "launch",
       "cwd": "${workspaceFolder}/src/code",
       "program": "${workspaceFolder}/src/code/getalldata.py"
+    },
+    {
+      "name": "Launch makeboard.py",
+      "type": "python",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/src/code",
+      "program": "${workspaceFolder}/src/code/makeboard.py"
     }
   ]
 }
