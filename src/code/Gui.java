@@ -38,8 +38,8 @@ public static void main(String[] args) {
   f.setSize(300, 300);
   f.setLocation(50, 300);
 
-  final JButton button1 = new JButton("Download data");
-  button1.addActionListener(new ActionListener() {
+  final JButton downloadButton = new JButton("Download data");
+  downloadButton.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
       try {
@@ -52,58 +52,39 @@ public static void main(String[] args) {
     }
   });
 
-  final JButton button2 = new JButton("Open RStudio");
-  button2.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      try {
-        Op.OpenRStudio();
-      } catch (AWTException er) {
-        er.printStackTrace();
-      } catch (FileNotFoundException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
+  final JButton openRstudioButton = new JButton("Open RStudio");
+  openRstudioButton.addActionListener(e -> {
+    try {
+      Op.OpenRStudio();
+    } catch (AWTException | FileNotFoundException er) {
+      er.printStackTrace();
     }
   });
 
-  final JButton button3 = new JButton("Source files");
-  button3.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      try {
-        Op.SourceFiles();
-      } catch (IOException err) {
-        err.printStackTrace();
-      }
-      // notify when download is completed
-      JOptionPane.showMessageDialog(f, "Operation completed");
+  final JButton sourceFilesButton = new JButton("Source files");
+  sourceFilesButton.addActionListener(e -> {
+    try {
+      Op.SourceFiles();
+    } catch (IOException err) {
+      err.printStackTrace();
     }
+    // notify when download is completed
+    JOptionPane.showMessageDialog(f, "Operation completed");
   });
 
-  final JButton button4 = new JButton("Open dashboard.pdf");
-  button4.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      Op.OpenPDF();
-    }
-  });
+  final JButton openDashboardButton = new JButton("Open dashboard.pdf");
+  openDashboardButton.addActionListener(e -> Op.OpenPDF());
 
-  final JButton button5 = new JButton("Open dashboard panel");
-  button5.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      Op.ShowBox(f);
-    }
-  });
+  final JButton openDashPanelButton = new JButton("Open dashboard panel");
+  openDashPanelButton.addActionListener(e -> Op.ShowBox(f));
 
   // add buttons to layout
   f.setLayout(new GridLayout(5, 1)); // 5 rows 1 column
-  f.add(button1);
-  f.add(button2);
-  f.add(button3);
-  f.add(button4);
-  f.add(button5);
+  f.add(downloadButton);
+  f.add(openRstudioButton);
+  f.add(sourceFilesButton);
+  f.add(openDashboardButton);
+  f.add(openDashPanelButton);
 
   f.setVisible(true);
 }

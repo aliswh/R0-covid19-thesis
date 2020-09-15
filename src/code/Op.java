@@ -1,17 +1,14 @@
 package code;
 
 //actions
+import java.io.*;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 //scanner
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Scanner;
-import java.io.FileWriter;
 //data
 import java.util.List;
 import java.util.ArrayList;
-import java.io.File;
-import java.io.FileNotFoundException;
 //gui
 import javax.swing.JFrame;
 import javax.swing.JDialog;
@@ -25,7 +22,6 @@ import java.awt.Panel;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 //exceptions
-import java.io.IOException;
 import java.awt.AWTException;
 
 public class Op {
@@ -42,7 +38,7 @@ public class Op {
       }*/
 		System.out.println(wk);
       String pyPath = Paths.get(wk, "/code/getalldata.py").toString();
-      Util.runCommand("\"get all data\"", pyPath);
+      Util.runPython(pyPath);
 
       /*
        * wait for the .py script to end, so I can open RStudio only when all files are
@@ -91,11 +87,12 @@ public class Op {
   }
 
 	public static void OpenRStudio() throws AWTException, FileNotFoundException {
-		String filename = Paths.get(wk, "/data/data/" + "zones_list").toString();
+		Path zonesList = Paths.get(wk, "/data/data/" + "zones_list");
+		InputStream zones_stream = new FileInputStream(zonesList.toAbsolutePath().toFile());
 		String function_path = Paths.get(wk, "/data/R/" + "est.R0.TD.R").toString();
 
-		Scanner s = new Scanner(new File(filename));
-		List<String> lines = new ArrayList<String>();
+		Scanner s = new Scanner(zones_stream);
+		List<String> lines = new ArrayList<>();
 
 		while (s.hasNextLine()) {
 			lines.add(s.nextLine());
