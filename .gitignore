@@ -1,0 +1,11 @@
+covid-data-private.iml
+.idea/
+.settings/
+.vscode/
+_temp/
+out/
+bin/
+.classpath
+.project
+.Rhistory
+
