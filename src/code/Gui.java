@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import java.awt.GridLayout;
+import java.io.FileNotFoundException;
 //exceptions
 import java.io.IOException;
 import java.awt.AWTException;
@@ -59,7 +60,10 @@ public static void main(String[] args) {
         Op.OpenRStudio();
       } catch (AWTException er) {
         er.printStackTrace();
-      }
+      } catch (FileNotFoundException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
     }
   });
 

@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Files;
 //gui
 import javax.swing.JFrame;
@@ -32,14 +33,16 @@ import java.io.IOException;
 import java.awt.AWTException;
 
 public class Op {
+	static String wk = Util.getWD();
+	static String[] arr = new String[0];
+	
 	public static void GetAllData() throws IOException {
-      String wk = Util.getWD();
-      // create 'plots' folder in 'data' folder
-      String docpath = Paths.get(wk, "/src/data/data").toString();
-      Path plotspath = Paths.get(docpath, "/plots");
+      /* create 'plots' folder in 'data' folder
+      String docpath = Paths.get(wk, "/data/data/").toString();
+      Path plotspath = Paths.get(docpath, "plots");
       if (Files.notExists(plotspath)) {
           Files.createDirectory(plotspath);
-      }
+      }*/
 
       String pyPath = Paths.get(wk, "/src/code/getalldata.py").toString();
       Util.runCommand("\"get all data\"", pyPath);
@@ -90,36 +93,9 @@ public class Op {
 
   }
 
-	public static void OpenRStudio() throws AWTException {	//TODO
-		// path to RStudio
-		String path = "C:/Program Files/RStudio/bin/rstudio.exe";
-		Util.runCommand("\"Opening RStudio\"", path);
-		Util.sleep(9000); // TODO define this value
-
-		// closes all currently open files in RStudio
-		Robot robot = new Robot();
-
-		robot.keyPress(KeyEvent.VK_CONTROL);
-		robot.keyPress(KeyEvent.VK_SHIFT);
-		robot.keyPress(KeyEvent.VK_W);
-
-		robot.keyRelease(KeyEvent.VK_W);
-		robot.keyRelease(KeyEvent.VK_SHIFT);
-		robot.keyRelease(KeyEvent.VK_CONTROL);
-
-	}
-
-	public static void SourceFiles() throws IOException {
-		String wk = Util.getWD();
-
-		String filewk = wk + "/src/code/temp.est.R0.TD.R";
-		File temp_file = new File(filewk);
-		
-		String filename = Paths.get(wk, "/src/data/data/" + "zones_list").toString();
-		String function_path = Paths.get(wk, "/src/data/R/" + "est.R0.TD.R").toString();
-		String temp_file_path = Paths.get(wk, "/src/code/" + "temp.est.R0.TD.R").toString();
-
-		String[] arr = new String[0];
+	public static void OpenRStudio() throws AWTException, FileNotFoundException {
+		String filename = Paths.get(wk, "/data/data/" + "zones_list").toString();
+		String function_path = Paths.get(wk, "/data/R/" + "est.R0.TD.R").toString();
 
 		Scanner s = new Scanner(new File(filename));
 		List<String> lines = new ArrayList<String>();
@@ -132,22 +108,26 @@ public class Op {
 		arr = lines.toArray(new String[0]);
 
 		Util.runCommand("source on est.R0.TD.R", function_path);
-		Util.sleep(2000);
+		Util.sleep(15000); //let rstudio open
 		Util.source();
 
-		String filepath_est_R0 = Paths.get(wk, "/src/data/tests/" + "est.R0.TD.R").toString(); // quello del prof va
-		// cambiato!!
-
-		int daycount = Integer.parseInt(arr[0]); // gets first element of the file, which is the number of days
-
-		
 		for (int i = 1; i < arr.length; i++) { // starts at 'arr[1]' because 'arr[0]' is the number of days
-			String path = Paths.get(wk, "/src/data/data/" + arr[i] + ".2020.R").toString();
+			String path = Paths.get(wk, "/data/data/" + arr[i] + ".2020.R").toString();
 			Util.runCommand("\"Loading\"", path); //
 			Util.sleep(1000);
 			Util.source();
 		}
 		
+	}
+
+	public static void SourceFiles() throws IOException {
+		String filewk = wk + "/code/temp.est.R0.TD.R";
+		String temp_file_path = Paths.get(wk, "/code/" + "temp.est.R0.TD.R").toString();
+		String filepath_est_R0 = Paths.get(wk, "/data/tests/" + "est.R0.TD.R").toString(); // quello del prof va cambiato!!
+		
+		File temp_file = new File(filewk);
+		
+		int daycount = Integer.parseInt(arr[0]); // gets first element of the file, which is the number of days
 		
 		for (int i = 1; i < arr.length; i++) {
 			uncomment(filepath_est_R0, arr[i], temp_file, daycount); // create file with data about the right zone
@@ -157,10 +137,9 @@ public class Op {
 			Util.source();
 		}
 		
-
 		// creates dashboard
 		Util.sleep(2000);
-		String pyPath = Paths.get(wk, "/src/code/makeboard.py").toString();
+		String pyPath = Paths.get(wk, "/code/makeboard.py").toString();
 		Util.runCommand("\"dashboard\"", pyPath);
 	}
 
@@ -174,9 +153,10 @@ public class Op {
 			boolean flag = false;
 			
 			String data = // beginning of file
-					"#Loading package\n" + "library(R0)\n"
-							+ "## Data is taken from the Department of Italian Civil Protection for key transmission parameters of an institutional\n"
-							+ "## outbreak during the 2020 SARS-Cov2 pandemic in Italy\n" + "\n";
+					"#Loading package\n" 
+					+ "library(R0)\n"
+					+ "## Data is taken from the Department of Italian Civil Protection for key transmission parameters of an institutional\n"
+					+ "## outbreak during the 2020 SARS-Cov2 pandemic in Italy\n" + "\n";
 
 			Scanner s = new Scanner(new File(filepath_est_R0));
 			
@@ -190,8 +170,9 @@ public class Op {
 					while (count < 3) {
 						nextLine = s.nextLine();
 						nextLine = nextLine.replaceFirst("#", ""); // uncomment '#'
-						if (count == 2) { // replace the 'end' value that determines the end of the temporal window to
-											// be considered for plotting
+						// replace the 'end' value that determines the end of the temporal window
+						// to be considered for plotting
+						if (count == 2) { 
 							nextLine = nextLine.replaceAll(regex, endstring);
 						}
 						data += (nextLine + "\n");
@@ -201,39 +182,45 @@ public class Op {
 				}
 			}
 			s.close();
+			
 			// if the zone isn't found by the scanner, add a standard simulation for it
 			if (!flag) {
-				String standardSim = "# STANDARD SIMULATION\n" + "data(" + zone + ".2020)\n"
-						+ "mGT<-generation.time(\"gamma\", c(3, 1.5))\n" + "TD <- est.R0.TD(" + zone
-						+ ".2020, mGT, begin=1, end=" + daycount + ", nsim=1450)" + "\n";
+				String standardSim = 
+					"# STANDARD SIMULATION\n" 
+					+ "data(" + zone + ".2020)\n"
+					+ "mGT<-generation.time(\"gamma\", c(3, 1.5))\n" 
+					+ "TD <- est.R0.TD(" + zone + ".2020, mGT, begin=1, end=" + daycount + ", nsim=1450)" + "\n";
 				data += standardSim;
 			}
 
 			String operSys = System.getProperty("os.name").toLowerCase();
 
 			// gets path to save graphs inside "data/plots"
-			String wk = Util.getWD();
-			String dirpath = Paths.get(wk, "/src/data/data/plots/").toString();
+			String dirpath = Paths.get(wk, "/data/data/plots/").toString();
+			
 			if (operSys.contains("win")) {
 				dirpath = "\"" + dirpath.replace("\\", "\\\\") + "\\\\";
 			} else
 				dirpath = "\"" + dirpath + "/";
 
 			data += // end of file
-					"\n" + "# Warning messages:\n"
-							+ "# 1: In est.R0.TD(Italy.2020, mGT) : Simulations may take several minutes.\n"
-							+ "# 2: In est.R0.TD(Italy.2020, mGT) : Using initial incidence as initial number of cases.\n"
-							+ "TD\n" + "# Reproduction number estimate using  Time-Dependent  method.\n"
-							+ "# 2.322239 2.272013 1.998474 1.843703 2.019297 1.867488 1.644993 1.553265 1.553317 1.601317 ...\n"
-							+ "## An interesting way to look at these results is to agregate initial data by longest time unit,\n"
-							+ "## such as weekly incidence. This gives a global overview of the epidemic.\n"
-							+ "TD.weekly <- smooth.Rt(TD, 5)\n" + "print(TD.weekly[[\"conf.int\"]])\n"
-							+ "print(TD.weekly[[\"R\"]])\n"
-							+ "# Reproduction number estimate using  Time-Dependant  method.\n"
-							+ "# 1.878424 1.580976 1.356918 1.131633 0.9615463 0.8118902 0.8045254 0.8395747 0.8542518 0.8258094..\n"
-							+ "png(file = " + dirpath + zone + ".png\", width = 1000, height = 400)\n" // exports graph as .png
-							+ "plot(TD.weekly)\n" 
-							+ "dev.off()\n";
+					"\n" 
+					+ "# Warning messages:\n"
+					+ "# 1: In est.R0.TD(Italy.2020, mGT) : Simulations may take several minutes.\n"
+					+ "# 2: In est.R0.TD(Italy.2020, mGT) : Using initial incidence as initial number of cases.\n"
+					+ "TD\n" 
+					+ "# Reproduction number estimate using  Time-Dependent  method.\n"
+					+ "# 2.322239 2.272013 1.998474 1.843703 2.019297 1.867488 1.644993 1.553265 1.553317 1.601317 ...\n"
+					+ "## An interesting way to look at these results is to agregate initial data by longest time unit,\n"
+					+ "## such as weekly incidence. This gives a global overview of the epidemic.\n"
+					+ "TD.weekly <- smooth.Rt(TD, 5)\n" 
+					+ "print(TD.weekly[[\"conf.int\"]])\n"
+					+ "print(TD.weekly[[\"R\"]])\n"
+					+ "# Reproduction number estimate using  Time-Dependant  method.\n"
+					+ "# 1.878424 1.580976 1.356918 1.131633 0.9615463 0.8118902 0.8045254 0.8395747 0.8542518 0.8258094..\n"
+					+ "jpeg(file = " + dirpath + zone + ".jpeg\", width = 1000, height = 400)\n" // exports graph as .jpeg
+					+ "plot(TD.weekly)\n" 
+					+ "dev.off()\n";
 
 			System.out.println(data);
 			fr.write(data);
@@ -251,16 +238,13 @@ public class Op {
 
 	// opens pdf file created after sourcing
 	public static void OpenPDF() {
-		String wk = Util.getWD();
-		String filename = Paths.get(wk, "/src/data/data/" + "_dashboard.pdf").toString();
+		String filename = Paths.get(wk, "/data/data/" + "_dashboard.pdf").toString();
 		Util.runCommand("\"Open PDF\"", filename);
 	}
 
 	// opens dialog box, that shows graphs made after sourcing
 	public static void ShowBox(JFrame f) {
-		String wk = Util.getWD();
-		File filedir = Paths.get(wk, "/src/data/data/plots").toFile();
-
+		File filedir = Paths.get(wk, "/data/data/plots").toFile();
 		String[] filelist = filedir.list(); // list with all images names
 
 		JDialog d = new JDialog(f, "");
@@ -268,6 +252,7 @@ public class Op {
 		Panel panel = new Panel(); // where it shows images
 		panel.setSize(new Dimension(1000, 400));
 
+		// scrollPane to navigate files
 		JList<String> folderlist = new JList<String>(filelist);
 		JScrollPane scrollPane = new JScrollPane(folderlist);
 		folderlist.addListSelectionListener(new ListSelectionListener() {
@@ -275,7 +260,8 @@ public class Op {
 			public void valueChanged(ListSelectionEvent arg0) {
 				panel.removeAll();
 				String link = folderlist.getSelectedValue().toString();
-				panel.add(new JLabel(new ImageIcon(Paths.get(wk, "/src/data/data/plots/" + link).toString())));
+				// show selected area graph
+				panel.add(new JLabel(new ImageIcon(Paths.get(wk, "/data/data/plots/" + link).toString())));
 				d.validate();
 				d.repaint();
 			}

@@ -1,4 +1,4 @@
-import os, pandas, datetime, time
+import os, sys, pandas, datetime, time
 import numpy as np
 
 # elapsed time check
@@ -51,7 +51,7 @@ for i in range(c, n-1): #c, n-1
 np.date = np.date[::-1]
 print('\r|OOO       |')
 
-count_makeFile = 0
+count_makeFile = 1
 def makeFile(data, zone):
     global count_makeFile
     if zone in allProvince:
@@ -147,9 +147,9 @@ print('\r|OOOOO     |')
     # _minus_ 
     # total cases of the day before _minus_ total case of the day before yesterday
 
-sub = 0                                 
+#sub = 0                                 
 def totalToDaily(list, prov):
-    global sub                          # total cases of the day before _minus_ total case of the day before yesterday --- starts at 0
+    sub = 0                         # total cases of the day before _minus_ total case of the day before yesterday --- starts at 0
     start = 0                           # total cases of the day before
     np.returnList = []
     for d in np.date:
@@ -160,7 +160,8 @@ def totalToDaily(list, prov):
             fullsub = 0
         np.returnList.append(fullsub)   
         sub = dif                       # sets new sub of the day for the next day
-    sub=0                               # resets sub for a new province
+    #sub=0                               # resets sub for a new province
+    print(np.returnList)
     return np.returnList
 
 def provinciaDaily(prov):
@@ -181,13 +182,12 @@ def provinciaDaily(prov):
 print('\r|OOOOOO    |')
 
 def changeDir():
-    dataDir = os.path.dirname(os.path.realpath('__file__'))
+    dataDir = sys.argv[0]   # current directory
     # To access the file inside a sibling folder
-    path = '../data/data'
-    path = os.path.join(dataDir, path)
+    path = '../../data/data'
     #filename = os.path.join(fileDir, '../[sibling directory]')
+    path = os.path.join(dataDir, path)
     path = os.path.abspath(os.path.realpath(path))
-    print(path)
     os.chdir(path)
 changeDir()    #change working directory
 

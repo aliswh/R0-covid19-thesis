@@ -1,15 +1,15 @@
-import os
+import os, sys
 from fpdf import FPDF
 
 def changeDir(path):
-    dataDir = os.path.dirname(os.path.realpath('__file__'))
+    dataDir = sys.argv[0]   # current directory
     # To access the file inside a sibling folder
     newpath = os.path.join(dataDir, path)
     #filename = os.path.join(fileDir, '../[sibling directory]')
     newpath = os.path.abspath(os.path.realpath(newpath))
     os.chdir(newpath)
 
-path = '../data/data/plots'
+path = '../../data/data/plots'
 changeDir(path)    #change working directory
 
 pdf = FPDF()        # creates pdf
@@ -41,11 +41,11 @@ for i in arr:
         xvar = 110
 
     line = str(i).replace('.png', '')
-    pdf.image(str(i), x = xvar,  y = yvar, w = 90, h = 36, type = 'png')     # add images to pdf
+    pdf.image(str(i), x = xvar,  y = yvar, w = 90, h = 36, type = 'jpeg')     # add images to pdf
     pdf.text(xvar, yvar, line)
     count += 1
     pagecount +=1
 
-path = '..'
+path = '../../data/data'
 changeDir(path)    #change working directory
 pdf.output('_dashboard.pdf', 'F')
