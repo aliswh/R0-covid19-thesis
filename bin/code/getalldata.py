@@ -161,7 +161,6 @@ def totalToDaily(list, prov):
         np.returnList.append(fullsub)   
         sub = dif                       # sets new sub of the day for the next day
     #sub=0                               # resets sub for a new province
-    print(np.returnList)
     return np.returnList
 
 def provinciaDaily(prov):

@@ -1,9 +1,6 @@
 package code;
 
 //actions
-import java.awt.event.KeyEvent;
-import java.awt.Robot;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 //scanner
 import java.io.BufferedReader;
@@ -15,7 +12,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.nio.file.Files;
 //gui
 import javax.swing.JFrame;
 import javax.swing.JDialog;
@@ -34,6 +30,7 @@ import java.awt.AWTException;
 
 public class Op {
 	static String wk = Util.getWD();
+	
 	static String[] arr = new String[0];
 	
 	public static void GetAllData() throws IOException {
@@ -43,8 +40,8 @@ public class Op {
       if (Files.notExists(plotspath)) {
           Files.createDirectory(plotspath);
       }*/
-
-      String pyPath = Paths.get(wk, "/src/code/getalldata.py").toString();
+		System.out.println(wk);
+      String pyPath = Paths.get(wk, "/code/getalldata.py").toString();
       Util.runCommand("\"get all data\"", pyPath);
 
       /*

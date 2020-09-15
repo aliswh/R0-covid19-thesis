@@ -4,14 +4,13 @@ package code;
 import java.awt.event.KeyEvent;
 import java.awt.Robot;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.FileSystems;
+import java.io.File;
 //scanner
 //data
 //gui
 //exceptions
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.awt.AWTException;
 
 public class Util {
@@ -19,7 +18,7 @@ public class Util {
 	// return the directory where the code is launched
 	public static String getWD() {
 	  Path workingDir = FileSystems.getDefault().getPath(new String()).toAbsolutePath();
-		String wk = workingDir.toString();
+		String wk = workingDir.toString() + File.separator +"src";
 		return wk;
 	}
 	
