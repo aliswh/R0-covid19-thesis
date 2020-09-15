@@ -12,10 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import java.awt.GridLayout;
-import java.io.FileNotFoundException;
 //exceptions
 import java.io.IOException;
-import java.awt.AWTException;
 import javax.swing.UnsupportedLookAndFeelException;
 
 public class Gui {
@@ -35,6 +33,7 @@ public static void main(String[] args) {
   }
 
   JFrame f = new JFrame("R0(t) for Covid-19");
+  f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
   f.setSize(300, 300);
   f.setLocation(50, 300);
 
@@ -52,23 +51,8 @@ public static void main(String[] args) {
     }
   });
 
-  final JButton button2 = new JButton("Open RStudio");
+  final JButton button2 = new JButton("Source files");
   button2.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      try {
-        Op.OpenRStudio();
-      } catch (AWTException er) {
-        er.printStackTrace();
-      } catch (FileNotFoundException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
-    }
-  });
-
-  final JButton button3 = new JButton("Source files");
-  button3.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
       try {
@@ -76,21 +60,19 @@ public static void main(String[] args) {
       } catch (IOException err) {
         err.printStackTrace();
       }
-      // notify when download is completed
-      JOptionPane.showMessageDialog(f, "Operation completed");
     }
   });
 
-  final JButton button4 = new JButton("Open dashboard.pdf");
-  button4.addActionListener(new ActionListener() {
+  final JButton button3 = new JButton("Open dashboard.pdf");
+  button3.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
       Op.OpenPDF();
     }
   });
 
-  final JButton button5 = new JButton("Open dashboard panel");
-  button5.addActionListener(new ActionListener() {
+  final JButton button4 = new JButton("Open dashboard panel");
+  button4.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
       Op.ShowBox(f);
@@ -98,12 +80,11 @@ public static void main(String[] args) {
   });
 
   // add buttons to layout
-  f.setLayout(new GridLayout(5, 1)); // 5 rows 1 column
+  f.setLayout(new GridLayout(4, 1)); // 4 rows 1 column
   f.add(button1);
   f.add(button2);
   f.add(button3);
   f.add(button4);
-  f.add(button5);
 
   f.setVisible(true);
 }

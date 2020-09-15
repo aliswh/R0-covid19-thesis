@@ -1,5 +1,7 @@
-.Rhistory
-.Rproj.user/
-.svn/
-R0-package.Rproj
-Read-and-delete-me
+.DS_Store
+.project
+.Rbuildignore
+.RData
+DESCRIPTION
+NAMESPACE
+README.md

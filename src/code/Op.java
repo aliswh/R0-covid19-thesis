@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.File;
-import java.io.FileNotFoundException;
 //gui
 import javax.swing.JFrame;
 import javax.swing.JDialog;
@@ -26,7 +25,6 @@ import java.awt.Dimension;
 import java.awt.BorderLayout;
 //exceptions
 import java.io.IOException;
-import java.awt.AWTException;
 
 public class Op {
 	static String wk = Util.getWD();
@@ -90,70 +88,79 @@ public class Op {
 
   }
 
-	public static void OpenRStudio() throws AWTException, FileNotFoundException {
+	public static void SourceFiles() throws IOException {
 		String filename = Paths.get(wk, "/data/data/" + "zones_list").toString();
-		String function_path = Paths.get(wk, "/data/R/" + "est.R0.TD.R").toString();
-
+		String temp_file_path = Paths.get(wk, "/code/" + "temp.est.R0.TD.R").toString();
+		String filepath_est_R0 = Paths.get(wk, "/data/tests/" + "est.R0.TD.R").toString();
+		
+		File temp_file = new File(temp_file_path);
+		int daycount;
+		
 		Scanner s = new Scanner(new File(filename));
 		List<String> lines = new ArrayList<String>();
-
 		while (s.hasNextLine()) {
 			lines.add(s.nextLine());
 		}
 		s.close();
+		
 		// add zone names to array 'arr' as Strings
 		arr = lines.toArray(new String[0]);
-
-		Util.runCommand("source on est.R0.TD.R", function_path);
-		Util.sleep(15000); //let rstudio open
-		Util.source();
-
-		for (int i = 1; i < arr.length; i++) { // starts at 'arr[1]' because 'arr[0]' is the number of days
-			String path = Paths.get(wk, "/data/data/" + arr[i] + ".2020.R").toString();
-			Util.runCommand("\"Loading\"", path); //
-			Util.sleep(1000);
-			Util.source();
-		}
-		
-	}
-
-	public static void SourceFiles() throws IOException {
-		String filewk = wk + "/code/temp.est.R0.TD.R";
-		String temp_file_path = Paths.get(wk, "/code/" + "temp.est.R0.TD.R").toString();
-		String filepath_est_R0 = Paths.get(wk, "/data/tests/" + "est.R0.TD.R").toString(); // quello del prof va cambiato!!
-		
-		File temp_file = new File(filewk);
-		
-		int daycount = Integer.parseInt(arr[0]); // gets first element of the file, which is the number of days
+		daycount = Integer.parseInt(arr[0]); // gets first element of the file, which is the number of days
 		
 		for (int i = 1; i < arr.length; i++) {
 			uncomment(filepath_est_R0, arr[i], temp_file, daycount); // create file with data about the right zone
-			// to source 'est.R0.TD.R' on
-			Util.runCommand("\"Plot\"", temp_file_path);
-			Util.sleep(1000);
-			Util.source();
+			//TODO run in cmd "Rscript temp.est.R0.TD.R"
 		}
-		
+		//Util.runCommand("\"Plot\"", temp_file_path);
 		// creates dashboard
-		Util.sleep(2000);
+		//Util.sleep(2000);
 		String pyPath = Paths.get(wk, "/code/makeboard.py").toString();
 		Util.runCommand("\"dashboard\"", pyPath);
 	}
 
 	public static void uncomment(String filepath_est_R0, String zone, File temp_file, int daycount) throws IOException {
 		FileWriter fr = null;
+		int count = 0;
+		boolean flag = false;
+		
 		String regex = "end=\\d*,"; // 'end=' followed by zero or more repetitions of any number [0-9] until char ','
 		String endstring = "end=" + daycount + ",";
 		try {
 			fr = new FileWriter(temp_file, false); // if false, overwrites file, if true appends
-			int count = 0;
-			boolean flag = false;
 			
+			String operSys = System.getProperty("os.name").toLowerCase();
+			
+			// gets path to save graphs inside "data/plots"
+			String dirpath = Paths.get(wk, "/data/data/plots/").toString();
+			String datadata = Paths.get(wk, "/data/data/").toString();
+			String dataR = Paths.get(wk, "/data/R/").toString();
+			
+			if (operSys.contains("win")) {
+				dirpath = "\"" + dirpath.replace("\\", "\\\\") + "\\\\";
+				datadata = "\"" + datadata.replace("\\", "\\\\") + "\"";
+				dataR =  "\"" + dataR.replace("\\", "\\\\") + "\"";
+			} else {
+				dirpath = "\"" + dirpath + "/";
+				datadata = "\"" + datadata + "/";
+				dataR = "\"" + dataR + "/";
+			}
+				
 			String data = // beginning of file
-					"#Loading package\n" 
-					+ "library(R0)\n"
-					+ "## Data is taken from the Department of Italian Civil Protection for key transmission parameters of an institutional\n"
-					+ "## outbreak during the 2020 SARS-Cov2 pandemic in Italy\n" + "\n";
+				"setwd(" + datadata + ")\n"
+				+ "zone.2020 <- function(){\n"
+				+ "source(" + "\"" + zone + ".2020.R" + "\")\n"
+				+ "}\n"
+				+ "zone.2020()\n\n"
+				+ "setwd(" + dataR + ")\n"
+				+ "est.R0.TD  <- function(){\n"
+				+ "  source(\"est.r0.TD.R\")\n"
+				+ "}\n"
+				+ "est.R0.TD()\n\n"
+				+ "createPlot <- function(){\n"
+				+ "#Loading package\n"
+				+ "library(R0)\n"
+				+ "## Data is taken from the Department of Italian Civil Protection for key transmission parameters of an institutional\n"
+				+ "## outbreak during the 2020 SARS-Cov2 pandemic in Italy\n";
 
 			Scanner s = new Scanner(new File(filepath_est_R0));
 			
@@ -184,21 +191,11 @@ public class Op {
 			if (!flag) {
 				String standardSim = 
 					"# STANDARD SIMULATION\n" 
-					+ "data(" + zone + ".2020)\n"
+					+ "data(" + zone +  ".2020)\n"
 					+ "mGT<-generation.time(\"gamma\", c(3, 1.5))\n" 
 					+ "TD <- est.R0.TD(" + zone + ".2020, mGT, begin=1, end=" + daycount + ", nsim=1450)" + "\n";
 				data += standardSim;
 			}
-
-			String operSys = System.getProperty("os.name").toLowerCase();
-
-			// gets path to save graphs inside "data/plots"
-			String dirpath = Paths.get(wk, "/data/data/plots/").toString();
-			
-			if (operSys.contains("win")) {
-				dirpath = "\"" + dirpath.replace("\\", "\\\\") + "\\\\";
-			} else
-				dirpath = "\"" + dirpath + "/";
 
 			data += // end of file
 					"\n" 
@@ -217,7 +214,9 @@ public class Op {
 					+ "# 1.878424 1.580976 1.356918 1.131633 0.9615463 0.8118902 0.8045254 0.8395747 0.8542518 0.8258094..\n"
 					+ "jpeg(file = " + dirpath + zone + ".jpeg\", width = 1000, height = 400)\n" // exports graph as .jpeg
 					+ "plot(TD.weekly)\n" 
-					+ "dev.off()\n";
+					+ "dev.off()\n"
+					+ "}\n"
+					+ "createPlot()";
 
 			System.out.println(data);
 			fr.write(data);

@@ -1,12 +1,24 @@
+setwd("C:\\Users\\Alice\\eclipse-workspace\\covid-data-private\\src\\data\\data")
+zone.2020 <- function(){
+source("Rovigo.2020.R")
+}
+zone.2020()
+
+setwd("C:\\Users\\Alice\\eclipse-workspace\\covid-data-private\\src\\data\\R")
+est.R0.TD  <- function(){
+  source("est.r0.TD.R")
+}
+est.R0.TD()
+
+createPlot <- function(){
 #Loading package
 library(R0)
 ## Data is taken from the Department of Italian Civil Protection for key transmission parameters of an institutional
 ## outbreak during the 2020 SARS-Cov2 pandemic in Italy
-
 # STANDARD SIMULATION
 data(Rovigo.2020)
 mGT<-generation.time("gamma", c(3, 1.5))
-TD <- est.R0.TD(Rovigo.2020, mGT, begin=1, end=204, nsim=1450)
+TD <- est.R0.TD(Rovigo.2020, mGT, begin=1, end=205, nsim=1450)
 
 # Warning messages:
 # 1: In est.R0.TD(Italy.2020, mGT) : Simulations may take several minutes.
@@ -24,3 +36,5 @@ print(TD.weekly[["R"]])
 jpeg(file = "C:\\Users\\Alice\\eclipse-workspace\\covid-data-private\\src\\data\\data\\plots\\Rovigo.jpeg", width = 1000, height = 400)
 plot(TD.weekly)
 dev.off()
+}
+createPlot()

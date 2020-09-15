@@ -31,7 +31,7 @@ public class Util {
 	  }
 	}
 	
-	// executes command in cmd
+	// executes command in cmd TODO change
 	public static void runCommand(String title, String path) {
 	  String[] commands = { "cmd", "/c", "start", title, path };
 	  // title == title given to the window (irrelevant to code purposes)
@@ -43,7 +43,7 @@ public class Util {
 	  }
 	}
 	
-	// presses shortcut "CTRL+SHIFT+S" that auto-sources files in RStudio
+	// presses shortcut "CTRL+SHIFT+S" that auto-sources files in RStudio TODO REMOVE
 	public static void source() {
 	  try {
 	    Robot robot = new Robot();
