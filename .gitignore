@@ -5,7 +5,8 @@ covid-data-private.iml
 _temp/
 out/
 bin/
+data/data/
 .classpath
 .project
 .Rhistory
-
+.DS_Store
