@@ -1,8 +1,8 @@
 # R0(t) visualization tool for Italy
 
-Tool to download data and output the reproduction number estimate using Time-Dependent method for Italy, its regions and its provinces.
-Thesis project of Alice Schiavone, student at Università dell'Insubria.
-Thesis advisor: Prof. Davide Tosi
+Tool to download data and output the reproduction number estimate using Time-Dependent method for Italy, its regions and its provinces.  
+Thesis project of Alice Schiavone, student at Università dell'Insubria.  
+Thesis advisor: Prof. Davide Tosi  
 
 ## Installation
 
