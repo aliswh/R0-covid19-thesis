@@ -48,7 +48,6 @@ if (!dir.exists('plots')){
 counter <- dim(dataframe)[1]
 
 createPlot <- function(val){
-  # get parameters
   zone <- as.numeric(dataframe[val,]) # get values 
   
   mGT<-generation.time("gamma", c(3, 1.5))
@@ -61,16 +60,14 @@ createPlot <- function(val){
   # 2: In est.R0.TD(Italy.2020, mGT) : Using initial incidence as initial number of cases.
   TD
   
-  # get last R0(t) calculated (yesterday if before 18:00, else today)
-  lastTD <- TD[["R"]][length(TD[["R"]])-1]
   # Reproduction number estimate using  Time-Dependent  method.
   # 2.322239 2.272013 1.998474 1.843703 2.019297 1.867488 1.644993 1.553265 1.553317 1.601317 ...
   
   ## An interesting way to look at these results is to agregate initial data by longest time unit,
   ## such as weekly incidence. This gives a global overview of the epidemic.
-  TD.weekly <- smooth.Rt(TD, 4)
+  TD.weekly <- smooth.Rt(TD, 7)
   #print(TD.weekly[["conf.int"]])
-  #print(TD.weekly[["R"]])
+  lastTD <- TD.weekly[["R"]][length(TD.weekly[["R"]])]
   
   # print which area was successfully calculated
   print(paste(val, names[val, 1]))
@@ -89,28 +86,21 @@ createPlot <- function(val){
   return(lastTD)
 }
 
-lastTD = 999 # if data is missing, set to a 'null' value (999)
-vTD <- c() # vector of R0(t) values
+df<-data.frame()
 
 sink(file='log.txt') # open stream to save log
 for (val in seq(1, counter))
 {
   tryCatch({
     lastTD <- createPlot(val)
+    v <- c(names[val,],lastTD)
+    df = rbind(df, v)
   }, error=function(e){ 
-    # if it wasn't possible to create a plot, print it in 'log.txt' for review
-    # and append null
     cat("ERROR :", val, names[val, 1], conditionMessage(e), "\n")
     })
-  vTD = append(vTD, lastTD)
-  lastTD = 999 # null
 }
 closeAllConnections()
 
-
-df = data.frame(names, vTD)
-colnames(df) <- c("zone", "index")
-# export .csv file with R0(t) values
 write.table(df, file='R0t-table.csv', quote=FALSE, row.names=FALSE, fileEncoding = "UTF-8", sep=";") 
 
 # print timestamp

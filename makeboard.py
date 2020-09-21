@@ -9,6 +9,8 @@ def changeDirOut(path):
 changeDirOut("..")
 
 df = pandas.read_csv('R0t-table.csv', sep=';')
+df.columns = range(df.shape[1])
+print(df)
 
 changeDirOut('../plots')    #change working directory
 
@@ -46,13 +48,12 @@ pdf.set_font('Arial', '', 8)
 pdf_values.set_text_color(0, 0, 0)
 pdf_values.set_font('Arial', '', 8)
 
-for i in df.index:   
-    line = df['zone'].iat[i]
-    value = df['index'].iat[i]
-    if (value!=999.0):
-        value = line + " = "+  str(value)
-        pdf.cell(w=0, h=5, txt=value, ln=1)
-        pdf_values.cell(w=0, h=5, txt=value, ln=1)
+for i in range(0, len(arr)):
+    line = df.iloc[i][0]
+    value = df.iloc[i][1]
+    value = line + " = "+  str(value)
+    pdf.cell(w=0, h=5, txt=value, ln=1)
+    pdf_values.cell(w=0, h=5, txt=value, ln=1)
 pdf.add_page()
 
 for i in arr:
