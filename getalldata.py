@@ -23,6 +23,7 @@ def getNames(url, denominazione):
     dflist = [x.replace(' ','') for x in dflist] # remove spaces
     dflist = [x.replace("'",'') for x in dflist] # remove apostrophes
     dflist = [x.replace("-",'') for x in dflist] # remove dashes
+    dflist = [x.replace('ì','i') for x in dflist] # remove i accent
     return dflist
 
 # variables
@@ -89,6 +90,7 @@ def clear_df(df):
     df.index = df.index.str.replace(' ','') # remove spaces
     df.index = df.index.str.replace("'",'') # remove apostrophes
     df.index = df.index.str.replace("-",'') # remove dashes
+    df.index = df.index.str.replace('ì','i')# remove i accent
     # delete 'Infasedidefinizione/aggiornamento' entry
     if (df.index.str.contains('fase').any()):
         df = df[~df.index.str.contains("fase")]
@@ -196,35 +198,33 @@ p_df = clear_df(result_df) # clear data - keep only provinces names
 
 # provinces .csv files don't have a daily cases column, 
 # to return a list with these values, this function makes this subtraction:
-    # total cases _minus_ total cases of the day before 
+    # 1) total cases _minus_ 2) cases of yesterday 
     # _minus_ 
-    # total cases of the day before _minus_ total case of the day before yesterday
+    # 3) cases of yesterday _minus_ total cases of the day before yesterday
                                
 def totalToDaily(prov):
-    sub = 0                   # total cases of the day before _minus_ total case of the day before yesterday --- starts at 0
-    start = 0                           # total cases of the day before
+    sub = 0 # 3) cases of yesterday _minus_ total cases of the day before yesterday - starts at 0
     returnList = []
-    for d in range(0, len(dates_vector)):
-        current = p_df.loc[prov, d]     # total cases 
-        #print(current, d)
-        dif = current - start           # total cases _minus_ total cases of the day before
-        fullsub = dif-sub               # full subtraction
-        if fullsub<0:                   # if it is below zero, set it at 0
+    for d in range(0, len(dates_vector)): 
+        dif = p_df.loc[prov, d] # 1) total cases      
+        fullsub = dif - sub # 2) total cases _minus_ cases of yesterday
+        if fullsub<0:  # if it is below zero, set it at 0
             fullsub = 0
         returnList.append(fullsub)   
-        sub = dif                       # sets new sub of the day for the next day
+        sub = dif # sets new sub of the day for the next day
     return returnList
 
 def provinciaDaily(prov):
     daily = totalToDaily(prov)
     
     if daily[0]<3:
-        datap = '3,' #TODO IMPORTANTE! le province hanno un dato in meno di regione e nazione
-        daily[0] = 3
+        datap = '3,'
+        daily.insert(0, 3) #(index, number)
     else: 
         datap = str(daily[0]) + ','
+        daily.insert(0, daily[0]) #(index, number)
 
-    for i in range(1, len(dates_vector)):
+    for i in range(0, len(dates_vector)):
         if (daily[i]>0):
             datap = datap + str(daily[i]) + ','
         else:

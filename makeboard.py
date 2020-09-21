@@ -82,5 +82,5 @@ for i in arr:
 
 changeDirOut('..')    #change working directory
 
-pdf.output('R0(t)_values_plots.pdf', 'F')
-pdf_values.output('R0(t)_values.pdf', 'F')
+pdf.output('R0(t)_values_plots.pdf', 'F').encode('latin-1','ignore')
+pdf_values.output('R0(t)_values.pdf', 'F').encode('latin-1','ignore')

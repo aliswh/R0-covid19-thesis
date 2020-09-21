@@ -23,8 +23,11 @@ est.R0.TD() # load main function
 
 py_run_file("getalldata.py") # download daily data
 
-if (Sys.info()['sysname'] == "Windows") {
+os <- Sys.info()['sysname']
+if ( os == "Windows") {
   path <- file.path(Sys.getenv("R_USER"), "_R0(t)data")
+} else if ( os == 'Darwin' ) {
+  path <- file.path(Sys.getenv("HOME"), "_R0tdata")
 } else {
   path <- file.path(Sys.getenv("~"), "_R0tdata")
 }
@@ -35,22 +38,23 @@ dataframe <- read.csv("_dataframe", stringsAsFactors=FALSE)
 names <- read.delim("_zones_list") # names of areas
 
 setwd(or_path) # return to original working directory
-if (!file.exists('plots')){
-  dir.create(file.path(or_path, 'plots'), showWarnings = FALSE)
+if (!dir.exists('plots')){
+  dir.create(file.path(or_path, 'plots'))
+} else { # directory reset
+  unlink("plots", recursive = TRUE) 
+  dir.create(file.path(or_path, 'plots'))
 }
 
 counter <- dim(dataframe)[1]
 
 createPlot <- function(val){
   # get parameters
-  area <- c(dataframe[val,])
-  names(dataframe[val,]) <- seq(from=as.Date("2020-02-24"), to=as.Date("2020-09-16"), by=1) # get names
-  zone <- as.numeric(area) # get values 
+  zone <- as.numeric(dataframe[val,]) # get values 
   
   mGT<-generation.time("gamma", c(3, 1.5))
   
   # apply function
-  TD <- est.R0.TD(zone, mGT, begin=1, end=204, nsim=1450) # STANDARD SIMULATION 
+  TD <- est.R0.TD(zone, mGT, begin=1, end=as.numeric(length(zone)), nsim=1450) # STANDARD SIMULATION 
 
   # Warning messages:
   # 1: In est.R0.TD(Italy.2020, mGT) : Simulations may take several minutes.
@@ -58,7 +62,7 @@ createPlot <- function(val){
   TD
   
   # get last R0(t) calculated (yesterday if before 18:00, else today)
-  lastTD <- TD[["R"]][length(TD[["R"]])]
+  lastTD <- TD[["R"]][length(TD[["R"]])-1]
   # Reproduction number estimate using  Time-Dependent  method.
   # 2.322239 2.272013 1.998474 1.843703 2.019297 1.867488 1.644993 1.553265 1.553317 1.601317 ...
   
