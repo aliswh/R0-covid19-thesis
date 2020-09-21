@@ -15,7 +15,9 @@ Thesis advisor: Prof. Davide Tosi
 #py_install("pandas")
 ```
 - When running, it will ask to download `Miniconda`: press 'Y' and enter.
-- Comment the previous line. You can now source the file.
+- Comment the previous line. You can now source the file.  
+  
+- To run makeboard.py, you need to install the 'fpdf' library. (pip install fpdf)
 
 ## Run
 
