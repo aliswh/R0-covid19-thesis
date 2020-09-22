@@ -8,7 +8,7 @@ def changeDirOut(path):
     os.chdir(newpath)
 changeDirOut("..")
 
-df = pandas.read_csv('R0t-table.csv', sep=';')
+df = pandas.read_csv('R0t-table.csv', sep=';', encoding='UTF-8')
 df.columns = range(df.shape[1])
 print(df)
 
@@ -49,11 +49,14 @@ pdf_values.set_text_color(0, 0, 0)
 pdf_values.set_font('Arial', '', 8)
 
 for i in range(0, len(arr)):
-    line = df.iloc[i][0]
-    value = df.iloc[i][1]
-    value = line + " = "+  str(value)
+    if sys.platform == "darwin":
+        line = int(df.iloc[i][0])
+    else:
+        line = df.iloc[i][0]
+    value = str(round((df.iloc[i][1]),3))
+    value = ("ID "+str(line) + " - R0(t) = " + value) 
     pdf.cell(w=0, h=5, txt=value, ln=1)
-    pdf_values.cell(w=0, h=5, txt=value, ln=1)
+    pdf_values.cell(w=0, h=5, txt=value, ln=1) 
 pdf.add_page()
 
 for i in arr:
