@@ -26,8 +26,6 @@ py_run_file("getalldata.py") # download daily data
 os <- Sys.info()['sysname']
 if ( os == "Windows") {
   path <- file.path(Sys.getenv("R_USER"), "_R0(t)data")
-} else if ( os == 'Darwin' ) {
-  path <- file.path(Sys.getenv("HOME"), "_R0(t)data")
 } else {
   path <- file.path(Sys.getenv("HOME"), "_R0(t)data")
 }
@@ -54,7 +52,7 @@ createPlot <- function(val){
   
   # apply function
   TD <- est.R0.TD(zone, mGT, begin=1, end=as.numeric(length(zone)), nsim=1450) # STANDARD SIMULATION 
-
+  
   # Warning messages:
   # 1: In est.R0.TD(Italy.2020, mGT) : Simulations may take several minutes.
   # 2: In est.R0.TD(Italy.2020, mGT) : Using initial incidence as initial number of cases.
@@ -97,7 +95,7 @@ for (val in seq(1, counter))
     df = rbind(df, v)
   }, error=function(e){ 
     cat("ERROR :", val, names[val, 1], conditionMessage(e), "\n")
-    })
+  })
 }
 closeAllConnections()
 
