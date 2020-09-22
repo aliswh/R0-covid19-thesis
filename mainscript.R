@@ -17,7 +17,7 @@ setwd(dirname(getActiveDocumentContext()$path))
 or_path <- getwd()
 
 est.R0.TD  <- function(){
-  source("est.r0.TD.R")
+  source("est.R0.TD.R")
 }
 est.R0.TD() # load main function
 
@@ -27,9 +27,9 @@ os <- Sys.info()['sysname']
 if ( os == "Windows") {
   path <- file.path(Sys.getenv("R_USER"), "_R0(t)data")
 } else if ( os == 'Darwin' ) {
-  path <- file.path(Sys.getenv("HOME"), "_R0tdata")
+  path <- file.path(Sys.getenv("HOME"), "_R0(t)data")
 } else {
-  path <- file.path(Sys.getenv("~"), "_R0tdata")
+  path <- file.path(Sys.getenv("HOME"), "_R0(t)data")
 }
 setwd(path) # access downloaded data
 
