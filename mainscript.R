@@ -99,7 +99,7 @@ for (val in seq(1, counter))
 }
 closeAllConnections()
 
-write.table(df, file='R0t-table.csv', quote=FALSE, row.names=FALSE, fileEncoding = "UTF-8", sep=";") 
+write.csv2(df, file='R0t-table.csv', quote=FALSE, row.names=FALSE, fileEncoding = "UTF-8") 
 
 # print timestamp
 end_time <- Sys.time()
