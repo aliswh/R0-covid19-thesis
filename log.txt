@@ -1,0 +1,139 @@
+
+> for (val in seq(1, counter))
++ {
++   tryCatch({
++     lastTD <- createPlot(val)
++     v <- c(names[val,],lastTD)
++     df = rbind(df, v)
++   }, erro .... [TRUNCATED] 
+[1] "1 Italy"
+[1] "2 Abruzzo"
+ERROR : 3 Basilicata NA in probability vector 
+[1] "4 Calabria"
+[1] "5 Campania"
+[1] "6 EmiliaRomagna"
+[1] "7 FriuliVeneziaGiulia"
+[1] "8 Lazio"
+[1] "9 Liguria"
+[1] "10 Lombardia"
+[1] "11 Marche"
+ERROR : 12 Molise NA in probability vector 
+[1] "13 P.A.Bolzano"
+[1] "14 P.A.Trento"
+[1] "15 Piemonte"
+[1] "16 Puglia"
+[1] "17 Sardegna"
+[1] "18 Sicilia"
+[1] "19 Toscana"
+[1] "20 Umbria"
+ERROR : 21 ValledAosta NA in probability vector 
+[1] "22 Veneto"
+ERROR : 23 LAquila NA in probability vector 
+ERROR : 24 Teramo NA in probability vector 
+[1] "25 Pescara"
+ERROR : 26 Chieti NA in probability vector 
+ERROR : 27 Potenza NA in probability vector 
+ERROR : 28 Matera NA in probability vector 
+ERROR : 29 Cosenza NA in probability vector 
+ERROR : 30 Catanzaro NA in probability vector 
+ERROR : 31 ReggiodiCalabria lunghezza di 'row.names' non ammissibile 
+ERROR : 32 Crotone NA in probability vector 
+ERROR : 33 ViboValentia NA in probability vector 
+ERROR : 34 Caserta NA in probability vector 
+ERROR : 35 Benevento NA in probability vector 
+[1] "36 Napoli"
+ERROR : 37 Avellino NA in probability vector 
+ERROR : 38 Salerno NA in probability vector 
+[1] "39 Piacenza"
+[1] "40 Parma"
+[1] "41 ReggionellEmilia"
+[1] "42 Modena"
+[1] "43 Bologna"
+[1] "44 Ferrara"
+[1] "45 Ravenna"
+[1] "46 ForliCesena"
+[1] "47 Rimini"
+ERROR : 48 Udine lunghezza di 'row.names' non ammissibile 
+ERROR : 49 Gorizia NA in probability vector 
+ERROR : 50 Trieste NA in probability vector 
+ERROR : 51 Pordenone NA in probability vector 
+ERROR : 52 Viterbo NA in probability vector 
+ERROR : 53 Rieti NA in probability vector 
+[1] "54 Roma"
+[1] "55 Latina"
+ERROR : 56 Frosinone lunghezza di 'row.names' non ammissibile 
+[1] "57 Imperia"
+[1] "58 Savona"
+[1] "59 Genova"
+[1] "60 LaSpezia"
+[1] "61 Varese"
+[1] "62 Como"
+[1] "63 Sondrio"
+[1] "64 Milano"
+[1] "65 Bergamo"
+[1] "66 Brescia"
+[1] "67 Pavia"
+[1] "68 Cremona"
+[1] "69 Mantova"
+[1] "70 Lecco"
+[1] "71 Lodi"
+[1] "72 MonzaedellaBrianza"
+[1] "73 PesaroeUrbino"
+ERROR : 74 Ancona NA in probability vector 
+ERROR : 75 Macerata NA in probability vector 
+ERROR : 76 AscoliPiceno NA in probability vector 
+ERROR : 77 Fermo NA in probability vector 
+ERROR : 78 Campobasso NA in probability vector 
+ERROR : 79 Isernia NA in probability vector 
+[1] "80 Bolzano"
+[1] "81 Trento"
+[1] "82 Torino"
+[1] "83 Vercelli"
+[1] "84 Novara"
+[1] "85 Cuneo"
+ERROR : 86 Asti NA in probability vector 
+[1] "87 Alessandria"
+ERROR : 88 Biella NA in probability vector 
+ERROR : 89 VerbanoCusioOssola lunghezza di 'row.names' non ammissibile 
+ERROR : 90 Foggia NA in probability vector 
+[1] "91 Bari"
+ERROR : 92 Taranto NA in probability vector 
+ERROR : 93 Brindisi NA in probability vector 
+ERROR : 94 Lecce lunghezza di 'row.names' non ammissibile 
+ERROR : 95 BarlettaAndriaTrani NA in probability vector 
+ERROR : 96 Sassari NA in probability vector 
+ERROR : 97 Nuoro NA in probability vector 
+ERROR : 98 Cagliari NA in probability vector 
+ERROR : 99 Oristano NA in probability vector 
+ERROR : 100 SudSardegna NA in probability vector 
+ERROR : 101 Trapani NA in probability vector 
+[1] "102 Palermo"
+ERROR : 103 Messina NA in probability vector 
+ERROR : 104 Agrigento NA in probability vector 
+ERROR : 105 Caltanissetta NA in probability vector 
+ERROR : 106 Enna NA in probability vector 
+ERROR : 107 Catania lunghezza di 'row.names' non ammissibile 
+ERROR : 108 Ragusa NA in probability vector 
+ERROR : 109 Siracusa NA in probability vector 
+ERROR : 110 MassaCarrara lunghezza di 'row.names' non ammissibile 
+ERROR : 111 Lucca NA in probability vector 
+ERROR : 112 Pistoia NA in probability vector 
+[1] "113 Firenze"
+ERROR : 114 Livorno NA in probability vector 
+ERROR : 115 Pisa lunghezza di 'row.names' non ammissibile 
+ERROR : 116 Arezzo lunghezza di 'row.names' non ammissibile 
+ERROR : 117 Siena NA in probability vector 
+ERROR : 118 Grosseto lunghezza di 'row.names' non ammissibile 
+[1] "119 Prato"
+ERROR : 120 Perugia NA in probability vector 
+ERROR : 121 Terni NA in probability vector 
+ERROR : 122 Aosta NA in probability vector 
+[1] "123 Verona"
+[1] "124 Vicenza"
+ERROR : 125 Belluno NA in probability vector 
+[1] "126 Treviso"
+[1] "127 Venezia"
+[1] "128 Padova"
+ERROR : 129 Rovigo NA in probability vector 
+
+> closeAllConnections()

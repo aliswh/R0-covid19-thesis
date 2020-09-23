@@ -10,7 +10,6 @@ changeDirOut("..")
 
 df = pandas.read_csv('R0t-table.csv', sep=';', encoding='UTF-8')
 df.columns = range(df.shape[1])
-print(df)
 
 changeDirOut('../plots')    #change working directory
 
@@ -53,7 +52,7 @@ for i in range(0, len(arr)):
     line = arr[i].replace('.jpeg', '')
     line = line.replace('_129_', ', ') # cleans name
 
-    value = str(round((df.iloc[i][1]),3))
+    value = str(df.iloc[i][1])[:5]
 
     value = ("ID " + line + " - R0(t) = " + value) 
 
