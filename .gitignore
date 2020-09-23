@@ -1,0 +1,6 @@
+venv/
+plots/
+.idea/
+*.pdf
+*.csv
+*.txt
