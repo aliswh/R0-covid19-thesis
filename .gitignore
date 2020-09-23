@@ -4,3 +4,4 @@ plots/
 *.pdf
 *.csv
 *.txt
+.Rhistory
