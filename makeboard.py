@@ -20,6 +20,7 @@ pdf.add_page()
 pdf_values.add_page()
 
 arr = os.listdir()  # creates array with files name in 'plots' folder
+arr.sort(key=lambda fname: int(fname.split('_129_')[0]))
 
 xvar = 10
 yvar = 20
@@ -49,12 +50,13 @@ pdf_values.set_text_color(0, 0, 0)
 pdf_values.set_font('Arial', '', 8)
 
 for i in range(0, len(arr)):
-    if sys.platform == "darwin":
-        line = int(df.iloc[i][0])
-    else:
-        line = df.iloc[i][0]
+    line = arr[i].replace('.jpeg', '')
+    line = line.replace('_129_', ', ') # cleans name
+
     value = str(round((df.iloc[i][1]),3))
-    value = ("ID "+str(line) + " - R0(t) = " + value) 
+
+    value = ("ID " + line + " - R0(t) = " + value) 
+
     pdf.cell(w=0, h=5, txt=value, ln=1)
     pdf_values.cell(w=0, h=5, txt=value, ln=1) 
 pdf.add_page()
@@ -75,8 +77,8 @@ for i in arr:
     elif(count==1):
         xvar = 110
 
-    line = str(i).replace('.jpeg', '')
-    line = line.replace('_129_', '. ')
+    line = i.replace('.jpeg', '')
+    line = line.replace('_129_', ', ')
 
     pdf.image(str(i), x = xvar,  y = yvar, w = 90, h = 36, type = 'jpeg')     # add images to pdf
 
