@@ -163,13 +163,18 @@ def regioneDaily(region):
     else:
         datar = str(df.iat[0]) + ','
 
+    counter = 0
     # starts at 1 because first value df.iat[0] needs to be '3'
     for i in range(1, count): 
         if (df.iat[i]>0):
             datar = datar + str(df.iat[i]) + ','
         else:
             datar = datar + "0" + ','
-            temp_r_df.iat[0,i] = 0
+            if (counter<=10): # set the first 10 numbers at 1 if <=0
+                temp_r_df.iat[0,i] = 1 #TODO = 0
+                counter += 1
+            else: 
+                temp_r_df.iat[0,i] = 0
     datar = datar[:-1]    # delete last ','
     
     makeFile(datar, region)
@@ -224,12 +229,18 @@ def provinciaDaily(prov):
         datap = str(daily[0]) + ','
         daily.insert(0, daily[0]) #(index, number)
 
+    counter = 0
     for i in range(0, len(dates_vector)):
         if (daily[i]>0):
             datap = datap + str(daily[i]) + ','
         else:
             datap = datap + "0" + ','
-            daily[i] = 0
+            if (counter<=10): # set the first 10 numbers at 1 if <=0
+                daily[i] = 1 #TODO = 0
+                counter += 1
+            else:
+                daily[i] = 0
+
 
     datap = datap[:-1]
     makeFile(datap, prov)

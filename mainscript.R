@@ -8,7 +8,7 @@
 library(R0)
 library(reticulate)
 library(rstudioapi)
-#py_install("pandas")
+#py_install("pandas") # uncomment this line only on the first run
 
 # set working directory
 start_time <- Sys.time() # get timestamp
@@ -29,7 +29,7 @@ if ( os == "Windows") {
 } else {
   path <- file.path(Sys.getenv("HOME"), "_R0(t)data")
 }
-setwd(path) # access downloaded data
+setwd(path) # access downloaded data directory
 
 # get dataframe with daily new cases per area, each column stores data for one area
 dataframe <- read.csv("_dataframe", stringsAsFactors=FALSE)
@@ -39,7 +39,7 @@ setwd(or_path) # return to original working directory
 if (!dir.exists('plots')){
   dir.create(file.path(or_path, 'plots'))
 } else { # directory reset
-  unlink("plots", recursive = TRUE) 
+  unlink("plots", recursive = TRUE) # reset folder
   dir.create(file.path(or_path, 'plots'))
 }
 
@@ -51,7 +51,7 @@ createPlot <- function(val){
   mGT<-generation.time("gamma", c(3, 1.5))
   
   # apply function
-  TD <- est.R0.TD(zone, mGT, begin=1, end=as.numeric(length(zone)), nsim=1450) # STANDARD SIMULATION 
+  TD <- est.R0.TD(zone, mGT, begin=1, end=as.numeric(length(zone)), nsim=1450) # STANDARD SIMULATION NUMBER
   
   # Warning messages:
   # 1: In est.R0.TD(Italy.2020, mGT) : Simulations may take several minutes.
@@ -64,20 +64,18 @@ createPlot <- function(val){
   ## An interesting way to look at these results is to agregate initial data by longest time unit,
   ## such as weekly incidence. This gives a global overview of the epidemic.
   TD.weekly <- smooth.Rt(TD, 7)
-  #print(TD.weekly[["conf.int"]])
-  lastTD <- TD.weekly[["R"]][length(TD.weekly[["R"]])]
+  lastTD <- TD.weekly[["R"]][length(TD.weekly[["R"]])] # get R0(t)
   
-  # print which area was successfully calculated
-  print(paste(val, names[val, 1]))
+  # print which area was successfully calculated 
+  print(paste(val, names[val, 1])) # testing purpose, not used
+  
   # Reproduction number estimate using  Time-Dependant  method.
   # 1.878424 1.580976 1.356918 1.131633 0.9615463 0.8118902 0.8045254 0.8395747 0.8542518 0.8258094..
   
-  # name of plot
+  # set name of plot
   filepath <- paste(or_path, "/plots/" ,val, "_129_", names[val, 1], ".jpeg", sep="")
-  
   # plot format
   jpeg(file = filepath, width = 1000, height = 400)
-  
   plot(TD.weekly)
   dev.off()
   
@@ -86,21 +84,21 @@ createPlot <- function(val){
 
 df<-data.frame()
 
-sink(file='log.txt') # open stream to save log
+sink(file='log.txt') # open stream to save log, testing purpose, not used
 for (val in seq(1, counter))
 {
   tryCatch({
     lastTD <- createPlot(val)
-    v <- c(names[val,],lastTD)
+    v <- c(names[val,],lastTD) # append R0(t) to csv
     df = rbind(df, v)
-  }, error=function(e){ 
-    cat("ERROR :", val, names[val, 1], conditionMessage(e), "\n")
+  }, error=function(e){
+    cat("ERROR :", val, names[val, 1], conditionMessage(e), "\n") # testing purpose, not used
   })
 }
-closeAllConnections()
+closeAllConnections() # close log, testing purpose, not used
 
 write.csv2(df, file='R0t-table.csv', quote=FALSE, row.names=FALSE, fileEncoding = "UTF-8") 
 
 # print timestamp
-end_time <- Sys.time()
-print(paste('Operation completed in', end_time - start_time, 'minutes'))
+end_time <- Sys.time() # get time
+print(paste('Operation completed in', end_time - start_time, 'minutes')) # testing purpose, not used
