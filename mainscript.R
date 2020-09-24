@@ -43,8 +43,6 @@ if (!dir.exists('plots')){
   dir.create(file.path(or_path, 'plots'))
 }
 
-counter <- dim(dataframe)[1]
-
 createPlot <- function(val){
   zone <- as.numeric(dataframe[val,]) # get values 
   
@@ -85,7 +83,7 @@ createPlot <- function(val){
 df<-data.frame()
 
 sink(file='log.txt') # open stream to save log, testing purpose, not used
-for (val in seq(1, counter))
+for (val in seq(1, dim(dataframe)[1]))
 {
   tryCatch({
     lastTD <- createPlot(val)
