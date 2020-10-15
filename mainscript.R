@@ -34,6 +34,11 @@ setwd(path) # access downloaded data directory
 # get dataframe with daily new cases per area, each column stores data for one area
 dataframe <- read.csv("_dataframe", stringsAsFactors=FALSE)
 names <- read.delim("_zones_list") # names of areas
+dates <- seq(as.Date("2020-02-24"), Sys.Date(), by="days")
+weeklydates <- c()
+for (d in seq(0,length(dates),7)){
+  weeklydates <- append(weeklydates, dates[d])
+}
 
 setwd(or_path) # return to original working directory
 if (!dir.exists('plots')){
@@ -74,7 +79,20 @@ createPlot <- function(val){
   filepath <- paste(or_path, "/plots/" ,val, "_129_", names[val, 1], ".jpeg", sep="")
   # plot format
   jpeg(file = filepath, width = 1000, height = 400)
-  plot(TD.weekly)
+  
+  r0.weekly <-TD.weekly[["R"]]
+  y.low <-  TD.weekly[["conf.int"]][["lower"]]
+  y.high <-  TD.weekly[["conf.int"]][["upper"]]
+  
+  plot(x=c(weeklydates, rev(weeklydates)), y=c(y.high,rev(y.low)), main=names[val, 1], xaxt="n", ylab="R0(t)", xlab = "", col="white")
+  
+  axis.Date(1, at=weeklydates, format="%d-%m-%Y", las = 2, cex.axis = .85)
+  
+  polygon(x=c(weeklydates, rev(weeklydates)), y=c(y.high,rev(y.low)), col ="grey90", border=NA)
+  
+  abline(1,0, lty=2, col="grey")
+  lines(weeklydates, r0.weekly, col="black", type="b", pch=20)
+  
   dev.off()
   
   return(lastTD)
