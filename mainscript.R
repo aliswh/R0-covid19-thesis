@@ -67,7 +67,9 @@ createPlot <- function(val){
   ## An interesting way to look at these results is to agregate initial data by longest time unit,
   ## such as weekly incidence. This gives a global overview of the epidemic.
   TD.weekly <- smooth.Rt(TD, 7)
-  lastTD <- TD.weekly[["R"]][length(TD.weekly[["R"]])] # get R0(t)
+
+  return_TD <- c(TD.weekly[["R"]]) 
+  #lastTD <- TD.weekly[["R"]][length(TD.weekly[["R"]])] # get R0(t)
   
   # print which area was successfully calculated 
   print(paste(val, names[val, 1])) # testing purpose, not used
@@ -80,9 +82,9 @@ createPlot <- function(val){
   # plot format
   jpeg(file = filepath, width = 1000, height = 400)
   
-  r0.weekly <-TD.weekly[["R"]]
-  y.low <-  TD.weekly[["conf.int"]][["lower"]]
-  y.high <-  TD.weekly[["conf.int"]][["upper"]]
+  r0.weekly <- TD.weekly[["R"]]
+  y.low <- TD.weekly[["conf.int"]][["lower"]]
+  y.high <- TD.weekly[["conf.int"]][["upper"]]
   
   plot(x=c(weeklydates, rev(weeklydates)), y=c(y.high,rev(y.low)), main=names[val, 1], xaxt="n", ylab="R0(t)", xlab = "", col="white")
   
@@ -95,24 +97,32 @@ createPlot <- function(val){
   
   dev.off()
   
-  return(lastTD)
+  return(return_TD)
 }
 
 df<-data.frame()
+temp_v <- c()
+everyTD <-matrix(NA, ncol=41, nrow=129) # export all R0(t) values
 
 sink(file='log.txt') # open stream to save log, testing purpose, not used
-for (val in seq(1, dim(dataframe)[1]))
-{
+for (val in seq(1, dim(dataframe)[1])){
   tryCatch({
     lastTD <- createPlot(val)
-    v <- c(names[val,],lastTD) # append R0(t) to csv
+    v <- c(names[val,],lastTD[length(lastTD)]) # append R0(t) to csv
     df = rbind(df, v)
+    everyTD[val,] <- lastTD
   }, error=function(e){
     cat("ERROR :", val, names[val, 1], conditionMessage(e), "\n") # testing purpose, not used
   })
 }
 closeAllConnections() # close log, testing purpose, not used
 
+# set col and row names
+everyTD <-  round(everyTD,3)
+colnames(everyTD) <- format(as.Date(weeklydates), "%Y-%m-%d")
+rownames(everyTD) <- names[,1]
+
+write.csv2(everyTD, file='R0t_history.csv', quote=FALSE, row.names=TRUE, fileEncoding = "UTF-8") 
 write.csv2(df, file='R0t-table.csv', quote=FALSE, row.names=FALSE, fileEncoding = "UTF-8") 
 
 # print timestamp
