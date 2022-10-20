@@ -1,4 +1,4 @@
-# Thesis project developed by Alice Schiavone, student at Università degli Studi dell'Insubria (July-Sept.2020)
+# Thesis project developed by Alice Schiavone, student at Universit? degli Studi dell'Insubria (July-Sept.2020)
 # Thesis advisor: Prof. Davide Tosi
 
 # Data is taken from the Department of Italian Civil Protection for key transmission parameters of an institutional
@@ -54,7 +54,7 @@ createPlot <- function(val){
   mGT<-generation.time("gamma", c(3, 1.5))
   
   # apply function
-  TD <- est.R0.TD(zone, mGT, begin=1, end=as.numeric(length(zone)), nsim=1450) # STANDARD SIMULATION NUMBER
+  TD <- est.R0.TD(zone, mGT, begin=1, end=as.numeric(length(zone)), nsim=200) # STANDARD SIMULATION NUMBER 1450
   
   # Warning messages:
   # 1: In est.R0.TD(Italy.2020, mGT) : Simulations may take several minutes.
@@ -105,7 +105,7 @@ temp_v <- c()
 everyTD <-matrix(NA, ncol=41, nrow=129) # export all R0(t) values
 
 sink(file='log.txt') # open stream to save log, testing purpose, not used
-for (val in seq(1, dim(dataframe)[1])){
+for (val in seq(1, dim(dataframe)[1])){ # 
   tryCatch({
     lastTD <- createPlot(val)
     v <- c(names[val,],lastTD[length(lastTD)]) # append R0(t) to csv
