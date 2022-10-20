@@ -63,7 +63,7 @@ else:
 for i in range(c, n-1):
     dates_vector.append(getDate(i)) 
 dates_vector = dates_vector[::-1] # reverse array
-print(len(dates_vector))
+print("Number of days: ", len(dates_vector))
 
 # creates .R files with daily new cases of each area to be sourced if needed
 # the directory is in the user's home directory and called '_R0(t)data'
@@ -111,7 +111,7 @@ national_df = pandas.read_csv(url_nazionale, index_col=[], usecols=['data', 'nuo
 
 # national data doesn't need to be manipulated
 national_col_new_positives = national_df['nuovi_positivi']
-main_df = main_df.append(national_col_new_positives) # append main_df first row
+main_df = pandas.concat([main_df, national_col_new_positives]).transpose() # append main_df first row
 
 def nazioneDaily():
     # create .R files with the numbers of daily new cases
@@ -182,7 +182,7 @@ def regioneDaily(region):
     makeFile(datar, region)
 
     global main_df
-    main_df = main_df.append(temp_r_df, ignore_index=True) # add new row with region data
+    main_df = pandas.concat([main_df,temp_r_df], ignore_index=True) # add new row with region data
 
 #  ____                 _                     
 # |  _ \ _ __ _____   _(_)_ __   ___ ___  ___ 
@@ -200,7 +200,7 @@ for p in allProvince:
     temp_p_df = p_df.filter(like=p) # get only columns with name=region
     temp_p_df = temp_p_df.rename(index={'totale_casi' : p}) # rename row index as province 
     temp_p_df.columns = range(temp_p_df.shape[1]) # reset index as integers
-    result_df = result_df.append(temp_p_df) # add new row with province data
+    result_df = pandas.concat([result_df,temp_p_df]) # add new row with province data
 p_df = clear_df(result_df) # clear data - keep only provinces names
 
 # provinces .csv files don't have a daily cases column, 
@@ -277,7 +277,7 @@ for x in allProvince:
     provinciaDaily(x)
 
 prov_df = pandas.DataFrame(arrayDaily)  # create dataframe out of list of all provinces data
-main_df = main_df.append(prov_df)       # add new provinces dataframe to main dataframe
+main_df = pandas.concat([main_df,prov_df])       # add new provinces dataframe to main dataframe
 main_df.to_csv('_dataframe', index=False, encoding='UTF-8')  # create .csv 
 
 # elapsed time check
